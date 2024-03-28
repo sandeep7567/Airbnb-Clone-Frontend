@@ -4,22 +4,31 @@ import { Route, Routes } from "react-router-dom";
 
 import { auth } from "./firebase/firebase-config";
 import { onAuthStateChanged, signOut } from "firebase/auth";
+import { useAppDispatch } from "./hooks/state";
+import { isAuth, logout } from "./redux/slice/authentication-slice";
 
 function App() {
+  const dispatch = useAppDispatch();
+
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        console.log(user);
-        console.log(user?.uid);
-        console.log("User is sign in");
-        // User is signed in, see docs for a list of available properties
-        // https://firebase.google.com/docs/reference/js/auth.user
-        // const uid = user.uid;
-        // ...
+        
+        const userInfo = {
+          displayName: user.displayName,
+          email: user.email,
+          emailVerified: user.emailVerified,
+          photoURL: user.photoURL ?? undefined,
+          uid: user.uid,
+        };
+        
+        dispatch(isAuth(userInfo));
       } else {
         signOut(auth)
           .then(() => console.log("User is signed out"))
           .catch((error) => console.log("logout failed", error));
+
+        dispatch(logout());
       }
     });
   }, []);

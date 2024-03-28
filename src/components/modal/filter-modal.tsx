@@ -2,8 +2,18 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Modal } from "@/components/modal/modal";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 export const FilterModal = () => {
+  const { data: isAuth } = useSelector(
+    (state: RootState) => state.authentication
+  );
+  
+  if (!isAuth) {
+    return null;
+  }
+
   return (
     <Modal title={"Log in"}>
       <div className="grid gap-4 py-4 p-0 mt-4 pr-6 h-4/5 overflow-y-scroll">

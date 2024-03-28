@@ -4,17 +4,22 @@ import { Input } from "@/components/ui/input";
 import { Modal } from "@/components/modal/modal";
 import { RootState } from "@/redux/store";
 
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { onClose } from "@/redux/slice/modal-register-slice";
+import { useAppDispatch } from "../../hooks/state";
 
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 // import { app } from "@/firebase/firebase-config";
 import { useState } from "react";
 import { auth } from "@/firebase/firebase-config";
+import { registerThunk } from "@/redux/thunks/authentication";
+import { UserI } from "@/types";
 
 export const RegisterModal = () => {
+  const dispatch = useAppDispatch();
   const { open } = useSelector((state: RootState) => state.registerModal);
-  const dispatch = useDispatch();
+  const { data: isAuth } = useSelector((state: RootState) => state.authentication);
+  
   const onCloseModal = () => {
     dispatch(onClose());
   };
@@ -30,9 +35,18 @@ export const RegisterModal = () => {
         console.log(email);
         const { user } = await createUserWithEmailAndPassword(auth, email, password);
         
-        await updateProfile(user, { displayName: name, photoURL: undefined  });
+        await updateProfile(user, { displayName: name, photoURL: user?.photoURL ?? "https://i.stack.imgur.com/l60Hf.png" });
 
-        console.log(user);
+        const userInfo: UserI = {
+          displayName: user.displayName,
+          email: user.email,
+          emailVerified: user.emailVerified,
+          photoURL: user?.photoURL,
+          password: password,
+          uid: user.uid,
+        };
+        
+        dispatch(registerThunk(userInfo));
       };
       
     } catch (error: any) {
@@ -40,6 +54,10 @@ export const RegisterModal = () => {
       const errorMessage = error.message;
       console.log(errorCode, errorMessage);
     }
+  };
+
+  if (isAuth) {
+    return null;
   };
 
   return (

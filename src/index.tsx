@@ -17,15 +17,15 @@ import { store } from "@/redux/store";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <BrowserRouter>
-      <Provider store={store}>
+    <Provider store={store}>
+      <BrowserRouter>
         <LoginModal />
         <RegisterModal />
         <SearchModal />
-        {/* <FilterModal /> */}
+        <FilterModal />
         {/* <HostModal /> */}
         <App />
-      </Provider>
-    </BrowserRouter>
+      </BrowserRouter>
+    </Provider>
   </React.StrictMode>
 );

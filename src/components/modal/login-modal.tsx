@@ -17,6 +17,8 @@ import { auth } from "@/firebase/firebase-config";
 
 export const LoginModal = () => {
   const { open } = useSelector((state: RootState) => state.loginModal);
+  const { data: isAuth } = useSelector((state: RootState) => state.authentication);
+
   const dispatch = useDispatch();
   const onCloseModal = () => {
     dispatch(onClose());
@@ -85,6 +87,11 @@ export const LoginModal = () => {
         console.log(errorCode, errorMessage, email, credential);
         // ...
       });
+  };
+
+  // if data is null then return modal;
+  if (isAuth) {
+    return null;
   };
 
   return (

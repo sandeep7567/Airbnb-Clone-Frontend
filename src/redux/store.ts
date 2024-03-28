@@ -2,6 +2,7 @@ import { configureStore } from '@reduxjs/toolkit'
 import loginModalSlice from './slice/modal-login-slice';
 import registerModalSlice from './slice/modal-register-slice';
 import searchModalSlice from './slice/modal-search-slice';
+import authenticationSlice from './slice/authentication-slice';
 
 export const store = configureStore({
   reducer: {
@@ -9,6 +10,7 @@ export const store = configureStore({
     loginModal: loginModalSlice,
     registerModal: registerModalSlice,
     searchModal: searchModalSlice,
+    authentication: authenticationSlice,
   },
 });
 

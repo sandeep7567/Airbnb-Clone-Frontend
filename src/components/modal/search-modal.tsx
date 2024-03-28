@@ -13,7 +13,12 @@ import {
 
 export const SearchModal = () => {
   const { open, step } = useSelector((state: RootState) => state.searchModal);
+  const { data: isAuth } = useSelector((state: RootState) => state.authentication);
   const dispatch = useDispatch();
+
+  if (!isAuth) {
+    return null;
+  }
 
   const onSubmit = () => {
     alert("data submit");
@@ -40,6 +45,8 @@ export const SearchModal = () => {
       </Button>
     );
   }
+
+  console.log(step);
 
   let children: React.ReactElement = (
     <div className="relative grid gap-4 py-4 p-0 mt-4 pr-6 h-4/5 overflow-y-scroll">
