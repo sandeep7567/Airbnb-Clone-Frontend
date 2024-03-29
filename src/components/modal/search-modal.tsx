@@ -1,20 +1,20 @@
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
 import { Modal } from "@/components/modal/modal";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
-import { RootState } from "@/redux/store";
-import { useDispatch, useSelector } from "react-redux";
 import {
   STEPS,
   incrementStep,
   onClose,
 } from "@/redux/slice/modal-search-slice";
+import { RootState } from "@/redux/store";
+import { useDispatch, useSelector } from "react-redux";
 
 export const SearchModal = () => {
+  const dispatch = useDispatch();
   const { open, step } = useSelector((state: RootState) => state.searchModal);
   const { data: isAuth } = useSelector((state: RootState) => state.authentication);
-  const dispatch = useDispatch();
 
   if (!isAuth) {
     return null;

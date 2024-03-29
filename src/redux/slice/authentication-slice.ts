@@ -29,7 +29,10 @@ export const authenticationSlice = createSlice({
     },
 
     logout : (state) => {
-      return { ...state }
+      state.loading = "idle";
+      state.message = null;
+      state.data = null;
+      state.success = false;
     },
 
     reset: (state) => {

@@ -1,5 +1,5 @@
-import { Menu } from "lucide-react";
 import { UserAvatar } from "@/components/element/appbar/user-avatar";
+import { Menu } from "lucide-react";
 
 import {
   DropdownMenu,
@@ -10,15 +10,31 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import { useDispatch } from "react-redux";
+import { auth } from "@/firebase/firebase-config";
+import { useHosting } from "@/hooks/use-hosting";
+import { cn } from "@/lib/utils";
+import { logout } from "@/redux/slice/authentication-slice";
 import { onOpen } from "@/redux/slice/modal-login-slice";
 import { onOpen as onOpenRegisterModal } from "@/redux/slice/modal-register-slice";
-import { useHosting } from "@/hooks/use-hosting";
+import { RootState } from "@/redux/store";
+import { signOut } from "firebase/auth";
+import { useDispatch, useSelector } from "react-redux";
 
 export const UserMenu = () => {
   const dispatch = useDispatch();
+  const { data: isAuth } = useSelector(
+    (state: RootState) => state.authentication
+  );
 
   const { handleHosting } = useHosting();
+
+  const logoutHandler = async () => {
+    await signOut(auth)
+      .then(() => console.log("User is signed out"))
+      .catch((error) => console.log("logout failed", error));
+
+    dispatch(logout());
+  };
 
   return (
     <div className="relative">
@@ -46,21 +62,19 @@ export const UserMenu = () => {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <div
-              className="
-                p-4
-                md:py-1
-                md:px-2
-                border 
-                border-neutral-200 
-                flex
-                flex-row 
-                items-center 
-                gap-3
-                rounded-full
-                cursor-pointer 
-                hover:shadow-md
-                transition
-              "
+              className={cn(`p-4
+              md:py-1
+              md:px-2
+              border 
+              border-neutral-200 
+              flex
+              flex-row 
+              items-center 
+              gap-3
+              rounded-full
+              cursor-pointer 
+              hover:shadow-md
+              transition`)}
             >
               <Menu size={16} />
               <div className="hidden md:block">
@@ -71,32 +85,77 @@ export const UserMenu = () => {
               </div>
             </div>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-56 absolute top-0 py-2 -right-6 md:-right-10">
-            <DropdownMenuGroup>
+          {isAuth ? (
+            <DropdownMenuContent className="w-56 absolute top-0 py-2 -right-6 md:-right-10">
+              <DropdownMenuGroup>
+                <DropdownMenuItem
+                  onClick={() => {}}
+                  className="cursor-pointer text-base py-2"
+                >
+                  Whishlists
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => {}}
+                  className="cursor-pointer text-base py-2"
+                >
+                  Manage listings
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  onClick={() => {}}
+                  className="cursor-pointer text-base py-2"
+                >
+                  Trips
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => {}}
+                  className="cursor-pointer text-base py-2"
+                >
+                  Account
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+              <DropdownMenuSeparator />
               <DropdownMenuItem
-                onClick={() => dispatch(onOpenRegisterModal())}
-                className="font-bold cursor-pointer text-base py-2"
-              >
-                Sign up
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => dispatch(onOpen())}
+                onClick={handleHosting}
                 className="cursor-pointer text-base py-2"
               >
-                Log in
+                Airbnb your home
               </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={handleHosting}
-              className="cursor-pointer text-base py-2"
-            >
-              Airbnb your home
-            </DropdownMenuItem>
-            <DropdownMenuItem className="cursor-pointer text-base py-2">
-              Help Center
-            </DropdownMenuItem>
-          </DropdownMenuContent>
+              <DropdownMenuItem
+                onClick={logoutHandler}
+                className="font-bold cursor-pointer text-base py-2"
+              >
+                logout
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          ) : (
+            <DropdownMenuContent className="w-56 absolute top-0 py-2 -right-6 md:-right-10">
+              <DropdownMenuGroup>
+                <DropdownMenuItem
+                  onClick={() => dispatch(onOpenRegisterModal())}
+                  className="font-bold cursor-pointer text-base py-2"
+                >
+                  Sign up
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => dispatch(onOpen())}
+                  className="cursor-pointer text-base py-2"
+                >
+                  Log in
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={handleHosting}
+                className="cursor-pointer text-base py-2"
+              >
+                Airbnb your home
+              </DropdownMenuItem>
+              <DropdownMenuItem className="cursor-pointer text-base py-2">
+                Help Center
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          )}
         </DropdownMenu>
       </div>
     </div>
